@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from dau_decr import init_dau
 import config
-import retention_fitting
+import retention
 import dau_decr
 
 # reg_date > 20220617
@@ -47,13 +47,13 @@ def dau_calc(ret_arr):
 
 
 def main():
-  ret_arr = retention_fitting.ret_fitting(1000)
+  ret_arr = retention.ret_fitting(1000)
   x = range(config.days)
   fig, ax1 = plt.subplots()
   ax1.set_xlabel('Age')
   ax2 = ax1.twinx()
   # real retention rate
-  ax1.plot(x, retention_fitting.ret_real_arr(config.days), 'o', color="red", markersize=3)
+  ax1.plot(x, retention.ret_real_arr(config.days), 'o', color="red", markersize=3)
   # fitting retention rate
   ax1.plot(x, ret_arr[:config.days], '-', color='g')
   ax1.set_ylabel('Retention Rate', color='g')
@@ -71,7 +71,7 @@ def main():
   ax2.set_xlim(xmin=0)
 
 
-  plt.title("DAU Predict (DNU={},Func={})".format(config.dnu, retention_fitting.fun_name))
+  plt.title("DAU Predict (DNU={},Func={})".format(config.dnu, retention.fun_name))
   plt.grid()
   plt.show()
 

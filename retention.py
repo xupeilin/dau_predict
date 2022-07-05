@@ -50,16 +50,6 @@ def tarfun(x, a, b, c):
   return a/np.power(x, b)+c
 
 
-#fun_name = "exponent"
-#def tarfun(x, a, b, c):
-#  return a * np.power(math.e, -1*b*x)+c
-
-#def ret_fitting_day(day):
-#  params, covariance = curve_fit(tarfun, list(ret_real.keys()), list(ret_real.values()))
-#  print(params, covariance)
-#  return tarfun(day, params[0], params[1], params[2])
-
-
 def ret_fitting(day_num):
   params, covariance = curve_fit(tarfun, list(ret_real.keys()), list(ret_real.values()))
   print(params)

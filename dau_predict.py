@@ -5,7 +5,7 @@ import math
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import config
-import retention_fitting
+import retention
 import dau_decr
 import dau_incr
 
@@ -41,20 +41,20 @@ def dau_real_arr(days):
 
 
 x = range(config.days)
-ret_arr = retention_fitting.ret_fitting(1000)
+ret_arr = retention.ret_fitting(1000)
 
 fig, ax1 = plt.subplots()
 ax1.set_xlabel('Age')
 ax2 = ax1.twinx()
 # real retention rate
-ax1.plot(x, retention_fitting.ret_real_arr(config.days), 'o', color="red", markersize=3)
+ax1.plot(x, retention.ret_real_arr(config.days), 'o', color="red", markersize=3)
 # fitting retention rate
 ax1.plot(x, ret_arr[:config.days], '-', color='r')
 ax1.set_ylabel('Retention Rate', color='r')
 
 # simulation dau curve
-sim_dau = dau_incr.dau_calc(retention_fitting.ret_fitting(1000))
-sim_dau2 = dau_incr.dau_calc(retention_fitting.ret_target_fitting(1000))
+sim_dau = dau_incr.dau_calc(retention.ret_fitting(1000))
+sim_dau2 = dau_incr.dau_calc(retention.ret_target_fitting(1000))
 stock_dau = dau_decr.calc_stock_dau(np.array(ret_arr)) 
 
 ax2.plot(range(0, config.days), np.add(sim_dau,stock_dau), color="g")
@@ -69,7 +69,7 @@ ax2.set_ylim(ymin=0)
 ax2.set_xlim(xmin=0)
 
 
-plt.title("DAU Predict (DNU={},Func={})".format(config.dnu, retention_fitting.fun_name))
+plt.title("DAU Predict (DNU={},Func={})".format(config.dnu, retention.fun_name))
 plt.grid()
 plt.show()
 

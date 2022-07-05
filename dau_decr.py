@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import config
-import retention_fitting
+import retention
 
 # age: dau
 init_dau = {
@@ -312,7 +312,7 @@ def calc_stock_dau(ret_arr):
   return dau_arr
 
 def main():
-  ret_arr = retention_fitting.ret_fitting(1000)
+  ret_arr = retention.ret_fitting(1000)
   dau_arr = calc_stock_dau(ret_arr)
   dau_arr2 = stock_dau_real_arr(config.days)
 
