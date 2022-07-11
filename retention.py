@@ -17,70 +17,57 @@ ret_real = {
   30: 0.053,
 }
 
-def ret(n):
-  if n in ret_real:
-    return ret_real[n]
-  return None
-
-
-def ret_real_arr(day_num):
-  y = [1.0]
-  y += [ret(x) for x in range(1,day_num)]
-  return y
-
-
 ret_target = {
   1: 0.45,
   7: 0.17,
   30: 0.08,
 }
 
-def ret_target_arr(days):
-  ret_arr = [0]*days
-  for i in range(0, days):
-    if i in ret_target:
-      ret_arr[i] = ret_target[i]
-    else:
-      ret_arr[i] = None
-  return ret_arr
+class ret_fit:
+  real_ret = {}
+  fun_name = "hyperbolic"
+  params = []
+  covariance = []
+  
+  def __init__(self, ret_dict):
+    self.real_ret = ret_dict
+    self.params, self.covariance = curve_fit(ret_fit.tarfun, list(ret_dict.keys()), list(ret_dict.values()))
+    print(self.params)
+    print(self.covariance)
 
+  def tarfun(x, a, b, c):
+    return a/np.power(x, b)+c
 
-fun_name = "hyperbolic"
-def tarfun(x, a, b, c):
-  return a/np.power(x, b)+c
+  def fitting(self, day_num):
+    yf = [1.0]
+    yf+=[ret_fit.tarfun(i, *self.params) for i in range(1, day_num)]
+    return yf
 
-
-def ret_fitting(day_num):
-  params, covariance = curve_fit(tarfun, list(ret_real.keys()), list(ret_real.values()))
-  print(params)
-  print(covariance)
-  yf = [1.0]
-  yf+=[tarfun(i, params[0], params[1], params[2]) for i in range(1, day_num)]
-  return yf
-
-
-def ret_target_fitting(day_num):
-  params, covariance = curve_fit(tarfun, list(ret_target.keys()), list(ret_target.values()))
-  print(params)
-  print(covariance)
-  yf = [1.0]
-  yf+=[tarfun(i, params[0], params[1], params[2]) for i in range(1, day_num)]
-  return yf
-
+  def ret_arr(self, days):
+    ret_arr = [0]*days
+    for i in range(0, days):
+      if i in self.real_ret:
+        ret_arr[i] = self.real_ret[i]
+      else:
+        ret_arr[i] = None
+    return ret_arr
+  
 
 def main():
   x = range(0, config.days)
 
   fig, ax1 = plt.subplots()
+  real = ret_fit(ret_real)
   # real retention rate
-  ax1.plot(x, ret_real_arr(config.days), 'o', color="red", markersize=3)
+  ax1.plot(x, real.ret_arr(config.days), 'o', color="red", markersize=3)
   # fitting retention rate
-  ax1.plot(x, ret_fitting(config.days), '-', color='y')
+  ax1.plot(x, real.fitting(config.days), '-', color='y')
 
+  target = ret_fit(ret_target)
   # target retention rate
-  ax1.plot(x, ret_target_arr(config.days), 'o', color="g", markersize=3)
+  ax1.plot(x, target.ret_arr(config.days), 'o', color="g", markersize=3)
   # fitting retention rate
-  ax1.plot(x, ret_target_fitting(config.days), '-', color='b')
+  ax1.plot(x, target.fitting(config.days), '-', color='b')
 
   ax1.set_ylim(ymin=0)
   ax1.set_xlim(xmin=0)
@@ -88,7 +75,7 @@ def main():
   ax1.set_xlabel('Age')
   ax1.set_ylabel('Retention Rate', color='g')
 
-  plt.title("Retention Fitting (Func={})".format(fun_name))
+  plt.title("Retention Fitting (Func={})".format(ret_fit.fun_name))
   plt.grid()
   plt.show()
 
