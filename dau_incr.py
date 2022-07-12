@@ -9,27 +9,7 @@ import config
 import retention
 import dau_decr
 
-# reg_date > 20220617
-dau_real_from_new = {
-  1:  13047,
-  2:  19701,
-  3:  22959,
-  4:  25712,
-  5:  28293,
-  6:  30630,
-  7:  31668,
-  8:  33180,
-  9:  35518,
-  10: 36995,
-  11: 38213,
-  12: 37728,
-  13: 39389,
-  14: 39480,
-  15: 41528,
-  16: 43716,
-}
-
-def dau_real_from_new_arr(days):
+def dau_real_from_new_arr(days, dau_real_from_new):
   dau_arr = [0]*days
   for i in range(0, days):
     if i in dau_real_from_new:
@@ -47,21 +27,21 @@ def dau_calc(ret_arr):
 
 
 def main():
-  ret_arr = retention.ret_fitting(1000)
+  ret = retention.ret_fit(config.ret_real)
   x = range(config.days)
   fig, ax1 = plt.subplots()
   ax1.set_xlabel('Age')
   ax2 = ax1.twinx()
   # real retention rate
-  ax1.plot(x, retention.ret_real_arr(config.days), 'o', color="red", markersize=3)
+  ax1.plot(x, ret.ret_arr(config.days), 'o', color="red", markersize=3)
   # fitting retention rate
-  ax1.plot(x, ret_arr[:config.days], '-', color='g')
+  ax1.plot(x, ret.fitting(config.days), '-', color='g')
   ax1.set_ylabel('Retention Rate', color='g')
 
   # simulation dau curve
-  sim_dau = dau_calc(ret_arr)
+  sim_dau = dau_calc(ret.fitting(config.days))
   ax2.plot(range(0, config.days), sim_dau, color="b")
-  ax2.plot(range(0, config.days), dau_real_from_new_arr(config.days), 'o', color="y")
+  ax2.plot(range(0, config.days), dau_real_from_new_arr(config.days, config.dau_real_from_new), 'o', color="y")
 
   ax2.set_ylabel('DAU', color='b')
 
@@ -71,7 +51,7 @@ def main():
   ax2.set_xlim(xmin=0)
 
 
-  plt.title("DAU Predict (DNU={},Func={})".format(config.dnu, retention.fun_name))
+  plt.title("DAU Predict (DNU={},Func={})".format(config.dnu, ret.fun_name))
   plt.grid()
   plt.show()
 

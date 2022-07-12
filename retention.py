@@ -5,24 +5,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import config
 
-ret_real = {
-  1: 0.423,
-  2: 0.270,
-  3: 0.216,
-  4: 0.183,
-  5: 0.160,
-  6: 0.144,
-  7: 0.132,
-  14: 0.089,
-  30: 0.053,
-}
-
-ret_target = {
-  1: 0.45,
-  7: 0.17,
-  30: 0.08,
-}
-
 class ret_fit:
   real_ret = {}
   fun_name = "hyperbolic"
@@ -53,17 +35,17 @@ class ret_fit:
     return ret_arr
   
 
-def main():
+def test():
   x = range(0, config.days)
 
   fig, ax1 = plt.subplots()
-  real = ret_fit(ret_real)
+  real = ret_fit(config.ret_real)
   # real retention rate
   ax1.plot(x, real.ret_arr(config.days), 'o', color="red", markersize=3)
   # fitting retention rate
   ax1.plot(x, real.fitting(config.days), '-', color='y')
 
-  target = ret_fit(ret_target)
+  target = ret_fit(config.ret_target)
   # target retention rate
   ax1.plot(x, target.ret_arr(config.days), 'o', color="g", markersize=3)
   # fitting retention rate
@@ -81,4 +63,4 @@ def main():
 
 if __name__ == "__main__":
     # execute only if run as a script
-    main()
+    test()
