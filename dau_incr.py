@@ -4,7 +4,6 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from dau_decr import init_dau
 import config
 import retention
 import dau_decr
