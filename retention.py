@@ -25,6 +25,10 @@ class ret_fit:
     yf+=[ret_fit.tarfun(i, *self.params) for i in range(1, day_num)]
     return yf
 
+  def fitting_day(self, day):
+    if day == 0: return 1.0
+    return ret_fit.tarfun(day, *self.params)
+
   def ret_arr(self, days):
     ret_arr = [0]*days
     for i in range(0, days):
